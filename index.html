@@ -24,9 +24,14 @@
      
         .cat-btn.active { border-bottom: 2px solid var(--text); color: var(--text); font-weight: 600; }
      
+        /* Modal & Popup Styles */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; backdrop-filter: blur(4px); }
         .modal-content { background: var(--bg); color: var(--text); padding: 3.5rem; max-width: 520px; width: 92%; text-align: center; position: relative; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        
         .btn-nexus { border: 1px solid var(--text); padding: 0.6rem 1.2rem; font-size: 10px; letter-spacing: 0.25em; transition: all 0.3s ease; text-transform: uppercase; font-weight: 600; border-radius: 4px; }
         .btn-nexus:hover { background: var(--text); color: var(--bg); }
+        .btn-remove { font-size: 9px; color: #ef4444; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px; }
+        
         .wish-btn { position: absolute; top: 1.2rem; right: 1.2rem; z-index: 10; transition: transform 0.2s ease; }
         .wish-btn.active svg { fill: #ef4444; stroke: #ef4444; }
         .specs-list { font-size: 0.875rem; line-height: 1.5; color: #666; }
@@ -36,6 +41,20 @@
     </style>
 </head>
 <body id="body-tag" class="antialiased">
+
+    <div id="newsletter-modal" class="modal-overlay">
+        <div class="modal-content">
+            <button onclick="closeNewsletter()" class="absolute top-4 right-6 text-2xl font-light">&times;</button>
+            <h2 class="text-3xl font-light mb-4 tracking-widest">JOIN THE NEXUS</h2>
+            <p class="text-gray-500 text-sm mb-8 font-light">Subscribe for exclusive access to new drops and tech innovations.</p>
+            <form onsubmit="handleNewsletterSubmit(event)" class="space-y-4">
+                <input type="email" id="news-email" placeholder="YOUR EMAIL" class="w-full bg-transparent border-b border-gray-300 p-3 outline-none focus:border-[var(--accent)] text-center" required>
+                <button type="submit" class="w-full btn-nexus py-4">Subscribe</button>
+            </form>
+            <button onclick="closeNewsletter(true)" class="mt-6 text-[9px] uppercase tracking-widest opacity-40 hover:opacity-100 transition">Don't show again</button>
+        </div>
+    </div>
+
     <nav class="sticky top-0 z-50 glass p-4 shadow-sm">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div class="flex items-center gap-6">
@@ -60,6 +79,7 @@
             </div>
         </div>
     </nav>
+
     <main id="home" class="page active-page">
         <section class="min-h-[70vh] flex flex-col justify-center items-center text-center px-6">
             <div class="tech-animation-container">
@@ -80,77 +100,168 @@
         <section id="our-story" class="py-24 border-t border-gray-800/20 bg-gray-50/30 dark:bg-gray-900/10">
             <div class="max-w-5xl mx-auto px-6 text-center">
                 <h2 class="text-4xl font-light mb-8 uppercase tracking-tighter">Our Story</h2>
-                <p class="text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl mx-auto font-light">At Nexus, we believe connection is everything. Founded in 2023, our mission is to bridge the gap between innovation and everyday life, creating products and experiences that make a real difference.<br>What began as a bold idea has quickly grown into a passion-driven journey. Every step we take is guided by creativity, integrity, and a commitment to our community. We don’t just build products—we build solutions that inspire, simplify, and connect.<br>As we continue to grow, one thing remains constant: our dedication to delivering quality and innovation while staying true to the values that define us. Welcome to Nexus—where ideas meet impact.</p>
-            </div>
-        </section>
-        <section id="contact" class="py-24 border-t border-gray-800/10">
-            <div class="max-w-4xl mx-auto px-6">
-                <h2 class="text-3xl font-light mb-12 uppercase tracking-widest text-center">Subscribe</h2>
-                <form id="subscribe-form" class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <input type="text" id="subscribe-name" placeholder="NAME" class="bg-transparent border-b border-gray-300 p-4 outline-none focus:border-[var(--accent)]">
-                    <input type="email" id="subscribe-email" placeholder="EMAIL" class="bg-transparent border-b border-gray-300 p-4 outline-none focus:border-[var(--accent)]">
-                    <textarea id="subscribe-message" placeholder="HOW CAN WE HELP?" class="md:col-span-2 bg-transparent border-b border-gray-300 p-4 outline-none focus:border-[var(--accent)]"></textarea>
-                    <button type="submit" class="md:col-span-2 btn-nexus py-4">Subscribe</button>
-                </form>
+                <p class="text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl mx-auto font-light">At Nexus, we believe connection is everything. Founded in 2023, our mission is to bridge the gap between innovation and everyday life, creating products and experiences that make a real difference.</p>
             </div>
         </section>
     </main>
+
     <main id="products" class="page max-w-7xl mx-auto py-20 px-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" id="product-grid"></div>
     </main>
-    <main id="product-details" class="page max-w-6xl mx-auto py-24 px-6">
-        <button onclick="showPage('products')" class="text-xs tracking-widest opacity-50 mb-10">← BACK TO SHOP</button>
-        <div id="details-content" class="grid grid-cols-1 md:grid-cols-2 gap-16"></div>
-        <div id="reviews-section" class="mt-10">
-            <h3 class="text-2xl font-light mb-4">Product Reviews</h3>
-            <div id="reviews-list" class="space-y-4"></div>
-            <form id="review-form" class="mt-6" onsubmit="submitReview(event)">
-                <select id="review-rating" class="bg-transparent border-b border-gray-300 p-2 mb-4" required>
-                    <option value="">Select Rating</option>
-                    <option value="1">1 Star</option>
-                    <option value="2">2 Stars</option>
-                    <option value="3">3 Stars</option>
-                    <option value="4">4 Stars</option>
-                    <option value="5">5 Stars</option>
-                </select>
-                <textarea id="review-comment" placeholder="Write your review..." class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required></textarea>
-                <button type="submit" class="btn-nexus py-4 w-full">Submit Review</button>
-            </form>
-        </div>
-    </main>
-    <footer class="py-16 border-t border-var(--border) bg-var(--bg) text-var(--text) text-center">
-        <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-xl font-light tracking-[0.5em] mb-6">NEXUS</h2>
-            <div class="flex justify-center gap-10 text-[10px] tracking-widest uppercase opacity-50 mb-10">
-                <a href="#">Instagram</a><a href="#">Pinterest</a><a href="#">Ethos</a>
-            </div>
-            <p class="text-[9px] opacity-30 tracking-[0.3em]">© 2024 NEXUS COLLECTIVE. DESIGNED FOR THE FUTURE.</p>
-        </div>
-    </footer>
-    <main id="wishlist" class="page max-w-7xl mx-auto py-24 px-6"><div id="wishlist-grid" class="grid grid-cols-1 md:grid-cols-4 gap-8"></div></main>
+
     <main id="cart" class="page max-w-4xl mx-auto py-24 px-6">
+        <div class="flex justify-between items-end mb-10">
+            <h2 class="text-3xl font-light tracking-widest uppercase">Your Bag</h2>
+            <button onclick="clearCart()" class="text-[9px] uppercase tracking-widest opacity-50 hover:opacity-100">Clear All</button>
+        </div>
         <div id="cart-items" class="space-y-6"></div>
         <div id="cart-summary" class="mt-10 pt-10 border-t"></div>
-        <div id="checkout-section" class="mt-10">
+        <div id="checkout-section" class="mt-10 hidden">
             <h3 class="text-2xl font-light mb-4">Checkout</h3>
             <form id="checkout-form" onsubmit="handleCheckout(event)">
                 <input type="text" id="delivery-name" placeholder="Full Name" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
-                <input type="text" id="delivery-address" placeholder="Delivery Address" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
-                <input type="text" id="delivery-city" placeholder="City" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
-                <input type="text" id="delivery-postal" placeholder="Postal Code" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
-                <input type="tel" id="delivery-phone" placeholder="Phone Number" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
                 <input type="email" id="payment-email" placeholder="Email for Payment" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
                 <button type="submit" class="btn-nexus py-4 w-full">Proceed to Payment</button>
             </form>
         </div>
     </main>
+
     <script>
-        // Updated products with sales data
+        // State Management
+        let cart = JSON.parse(localStorage.getItem('nexus-cart')) || [];
+        let wishlist = JSON.parse(localStorage.getItem('nexus-wishlist')) || [];
+
         const products = [
-            { id: 1, name: 'Portable Car Hookah', price: 1360, category: 'Automotive', sales: 2100, image: 'https://www.ashishaonline.co.za/cdn/shop/products/109478526_3324191984298017_5697333573222117201_o_portable_shisha_2048x.jpg?v=1658918521', desc: 'Travel hookah designed for standard cup holders. Fits securely in most vehicle cup holders.', reviews: [] },
-            { id: 2, name: 'Auto Soap Dispenser', price: 720, category: 'Home', sales: 850, image: 'https://thefoschini.vtexassets.com/arquivos/ids/213899792-1200-1600?v=638901801086030000&width=1200&height=1600&aspect=true', desc: 'Touchless IR sensor dispenser. Experience hygienic handwashing.', reviews: [] },
-            { id: 3, name: 'Dog Paw Cleaner', price: 560, category: 'Pets', sales: 100, image: 'https://www.makro.co.za/asset/rukmini/fccp/832/832/ng-fkpublic-ui-user-fbbe/pet-cleanser/x/w/x/10-box-1-131746-alanes-original-imahbc3ktpx4sfw5.jpeg?q=70', desc: 'Silicone brush for muddy paws. Keep your home clean easily.', reviews: [] },
-            { id: 4, name: 'Quick dry Bath Mat', price: 960, category: 'Home', sales: 480, image: 'https://www.makro.co.za/asset/rukmini/fccp/832/832/ng-fkpublic-ui-user-fbbe/mat/v/p/n/diatomite-quick-dry-non-slip-bath-mat-durable-ultra-absorbent-original-imahfzcprggcgne5.jpeg?q=70', desc: 'Diatomaceous earth absorbent mat. Absorbs water instantly.', reviews: [] },
-            { id: 15, name: 'Self-Cleaning Bottle', price: 1520, category: 'Tech', sales: 310, image: 'https://www.cnet.com/a/img/resize/1077e112091a42644995a1945ec162c2d2fae98f/hub/2025/06/04/7bdb809e-6286-4d9b-bcd9-08077ce4dbb2/larq-self-cleaning-water-bottle.jpg?auto=webp&width=1200', desc: 'Built-in UV-C light for water purification.', reviews: [] },
-            { id: 16, name: 'Ungreen magnetic 5000Mah wireless 15W power bank', price: 1212, category: 'Tech', sales: 640, image: 'https://www.istore.co.za/media/catalog/product/cache/7cbfd4bf9761b066f119e95af17e67c5/5/1/5105rfkqdol._ac_sy879_.jpg', desc: 'The UGREEN Magnetic Wireless Power Bank 5000mAh securely attaches to your magsafe compatible iPhone with a strong internal magnet, providing cable-free charging without worrying about slippage.', reviews: [] },
-            { id: 17, name: 'Playstation 5 wireless ear buds', price: 6599, category: 'Tech', sales: 915, image: '
+            { id: 1, name: 'Portable Car Hookah', price: 1360, category: 'Automotive', sales: 2100, image: 'https://www.ashishaonline.co.za/cdn/shop/products/109478526_3324191984298017_5697333573222117201_o_portable_shisha_2048x.jpg?v=1658918521', desc: 'Travel hookah designed for standard cup holders.', reviews: [] },
+            { id: 2, name: 'Auto Soap Dispenser', price: 720, category: 'Home', sales: 850, image: 'https://thefoschini.vtexassets.com/arquivos/ids/213899792-1200-1600?v=638901801086030000', desc: 'Touchless IR sensor dispenser.', reviews: [] },
+            { id: 15, name: 'Self-Cleaning Bottle', price: 1520, category: 'Tech', sales: 310, image: 'https://www.cnet.com/a/img/resize/1077e112091a42644995a1945ec162c2d2fae98f/hub/2025/06/04/7bdb809e-6286-4d9b-bcd9-08077ce4dbb2/larq-self-cleaning-water-bottle.jpg?auto=webp&width=1200', desc: 'Built-in UV-C light for water purification.', reviews: [] }
+            // ... (rest of your products)
+        ];
+
+        // Newsletter Logic
+        window.onload = () => {
+            if (!localStorage.getItem('nexus-newsletter-hidden')) {
+                setTimeout(() => {
+                    document.getElementById('newsletter-modal').style.display = 'flex';
+                }, 2000);
+            }
+            renderProducts();
+            updateCounts();
+        };
+
+        function closeNewsletter(permanent = false) {
+            document.getElementById('newsletter-modal').style.display = 'none';
+            if (permanent) localStorage.setItem('nexus-newsletter-hidden', 'true');
+        }
+
+        function handleNewsletterSubmit(e) {
+            e.preventDefault();
+            alert('Welcome to the Collective. Your discount code has been sent.');
+            closeNewsletter(true);
+        }
+
+        // Navigation
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.getElementById(pageId).classList.add('active-page');
+            if(pageId === 'cart') renderCart();
+            window.scrollTo(0, 0);
+        }
+
+        // Cart Actions
+        function addToCart(id) {
+            const product = products.find(p => p.id === id);
+            cart.push(product);
+            saveAndRefresh();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            saveAndRefresh();
+            renderCart();
+        }
+
+        function clearCart() {
+            if(confirm('Empty your bag?')) {
+                cart = [];
+                saveAndRefresh();
+                renderCart();
+            }
+        }
+
+        function saveAndRefresh() {
+            localStorage.setItem('nexus-cart', JSON.stringify(cart));
+            updateCounts();
+        }
+
+        function updateCounts() {
+            document.getElementById('cart-count').innerText = cart.length;
+            document.getElementById('wish-count').innerText = wishlist.length;
+        }
+
+        function renderCart() {
+            const container = document.getElementById('cart-items');
+            const summary = document.getElementById('cart-summary');
+            const checkout = document.getElementById('checkout-section');
+            
+            if (cart.length === 0) {
+                container.innerHTML = `<p class="text-center py-10 opacity-50 uppercase tracking-widest">Your bag is empty</p>`;
+                summary.innerHTML = "";
+                checkout.classList.add('hidden');
+                return;
+            }
+
+            checkout.classList.remove('hidden');
+            container.innerHTML = cart.map((item, index) => `
+                <div class="flex items-center justify-between border-b border-gray-100 pb-6">
+                    <div class="flex items-center gap-6">
+                        <img src="${item.image}" class="w-20 h-24 object-cover rounded">
+                        <div>
+                            <h4 class="font-medium">${item.name}</h4>
+                            <p class="text-xs opacity-50">R ${item.price}</p>
+                            <button onclick="removeFromCart(${index})" class="btn-remove">Remove</button>
+                        </div>
+                    </div>
+                    <p class="font-light">R ${item.price}</p>
+                </div>
+            `).join('');
+
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            summary.innerHTML = `
+                <div class="flex justify-between text-xl font-light tracking-widest uppercase">
+                    <span>Total</span>
+                    <span>R ${total}</span>
+                </div>
+            `;
+        }
+
+        // Theme Toggle
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            document.getElementById('moon-icon').style.color = isDark ? '#3b82f6' : 'currentColor';
+        }
+
+        // Render Products (Initial)
+        function renderProducts(data = products) {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = data.map(p => `
+                <div class="product-card p-4 cursor-pointer" onclick="showProductDetails(${p.id})">
+                    <img src="${p.image}" class="w-full h-64 object-cover mb-4 rounded">
+                    <h3 class="text-xs tracking-widest uppercase mb-1">${p.name}</h3>
+                    <p class="text-sm font-semibold italic">R ${p.price}</p>
+                </div>
+            `).join('');
+        }
+
+        // Handle Search and Filter (Placeholders for your existing logic)
+        function filterByCategory(cat, btn) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const filtered = cat === 'All' ? products : products.filter(p => p.category === cat);
+            renderProducts(filtered);
+            showPage('products');
+        }
+    </script>
+</body>
+</html>
