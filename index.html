@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NEXUS | Modern Lifestyle Collective</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script id="paypal-sdk" src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=ZAR" async></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         :root { --bg: #fcfcfc; --text: #000; --border: #e5e7eb; --glass: rgba(255, 255, 255, 0.9); --accent: #2563eb; }
@@ -190,14 +189,14 @@
         <div id="cart-summary" class="mt-10 pt-10 border-t"></div>
         <div id="checkout-section" class="mt-10">
             <h3 class="text-2xl font-light mb-4">Checkout</h3>
-            <form id="checkout-form">
+            <form id="checkout-form" onsubmit="handleCheckout(event)">
                 <input type="text" id="delivery-name" placeholder="Full Name" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
                 <input type="text" id="delivery-address" placeholder="Delivery Address" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
                 <input type="text" id="delivery-city" placeholder="City" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
                 <input type="text" id="delivery-postal" placeholder="Postal Code" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
                 <input type="tel" id="delivery-phone" placeholder="Phone Number" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
                 <input type="email" id="payment-email" placeholder="Email for Payment" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
-                <div id="paypal-button-container" class="mt-6"></div>
+                <button type="submit" class="btn-nexus py-4 w-full">Proceed to Payment</button>
             </form>
         </div>
     </main>
@@ -396,15 +395,18 @@
             `;
         }
 
-        function validateCheckoutForm() {
-            const requiredFields = ['delivery-name', 'delivery-address', 'delivery-city', 'delivery-postal', 'delivery-phone', 'payment-email'];
-            for (let id of requiredFields) {
-                if (!document.getElementById(id).value.trim()) {
-                    alert('Please fill all delivery information fields.');
-                    return false;
-                }
-            }
-            return true;
+        async function handleCheckout(event) {
+            event.preventDefault();
+            const email = document.getElementById('payment-email').value;
+            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+            const response = await fetch('/api/create-paypal-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: total, currency: 'ZAR', email }) // Adjusted to send total amount, currency, and email
+            });
+            const data = await response.json();
+            window.location.href = data.approvalUrl; // redirect user to PayPal Sandbox
         }
 
         function toggleDarkMode() {
@@ -504,83 +506,6 @@
 
             // Show popup after load
             setTimeout(showEmailModal, 1800);
-
-            // Initialize PayPal Buttons after SDK loads
-            const paypalSdk = document.getElementById('paypal-sdk');
-            if (paypalSdk) {
-                paypalSdk.addEventListener('load', () => {
-                    if (typeof paypal !== 'undefined') {
-                        paypal.Buttons({
-                            onClick: function(data, actions) {
-                                if (!validateCheckoutForm()) {
-                                    return actions.reject();
-                                }
-                            },
-                            createOrder: function(data, actions) {
-                                const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-                                const name = document.getElementById('delivery-name').value.trim();
-                                const address = document.getElementById('delivery-address').value.trim();
-                                const city = document.getElementById('delivery-city').value.trim();
-                                const postal = document.getElementById('delivery-postal').value.trim();
-                                const phone = document.getElementById('delivery-phone').value.trim();
-                                const email = document.getElementById('payment-email').value.trim();
-                                const [given_name, ...surname_parts] = name.split(' ');
-                                const surname = surname_parts.join(' ');
-                                return actions.order.create({
-                                    purchase_units: [{
-                                        amount: {
-                                            value: total.toFixed(2),
-                                            currency_code: 'ZAR'
-                                        },
-                                        shipping: {
-                                            name: {
-                                                full_name: name
-                                            },
-                                            address: {
-                                                address_line_1: address,
-                                                admin_area_2: city,
-                                                postal_code: postal,
-                                                country_code: 'ZA'
-                                            }
-                                        }
-                                    }],
-                                    payer: {
-                                        name: {
-                                            given_name: given_name,
-                                            surname: surname
-                                        },
-                                        email_address: email,
-                                        phone: {
-                                            phone_number: {
-                                                national_number: phone
-                                            }
-                                        },
-                                        address: {
-                                            address_line_1: address,
-                                            admin_area_2: city,
-                                            postal_code: postal,
-                                            country_code: 'ZA'
-                                        }
-                                    }
-                                });
-                            },
-                            onApprove: function(data, actions) {
-                                return actions.order.capture().then(function(details) {
-                                    alert('Payment successful! Transaction ID: ' + details.id);
-                                    cart = [];
-                                    document.getElementById('cart-count').innerText = 0;
-                                    showPage('home');
-                                    document.getElementById('checkout-form').reset();
-                                });
-                            },
-                            onError: function(err) {
-                                console.error(err);
-                                alert('An error occurred during the transaction.');
-                            }
-                        }).render('#paypal-button-container');
-                    }
-                });
-            }
         });
     </script>
 </body>
