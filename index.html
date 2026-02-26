@@ -70,7 +70,7 @@
                 <canvas id="tech-canvas"></canvas>
                 <h2 class="text-6xl md:text-8xl font-extralight mb-10 tracking-tight uppercase">Elevated Living.</h2>
             </div>
-            <p class="text-gray-600 dark:text-gray-400 mb-10 max-w-xl leading-relaxed font-light text-lg">Engineered for Excellence at Nexus</p>
+            <p class="text-gray-600 dark:text-gray-400 mb-10 max-w-xl leading-relaxed font-light text-lg italic">Engineered for Excellence at Nexus</p>
             <div class="flex gap-6">
                 <button onclick="showPage('products')" class="border border-current px-10 py-4 hover:bg-[var(--text)] hover:text-[var(--bg)] transition uppercase text-[10px] tracking-[0.4em] font-semibold">Shop Collection</button>
             </div>
@@ -187,7 +187,6 @@
             if (cat === 'All') {
                 filtered = products;
             } else if (cat === 'Top Sellers') {
-                // Dynamically sort by sales data
                 filtered = [...products].sort((a, b) => b.sales - a.sales).slice(0, 4);
             } else {
                 filtered = products.filter(p => p.category === cat);
