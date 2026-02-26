@@ -189,15 +189,7 @@
         <div id="cart-summary" class="mt-10 pt-10 border-t"></div>
         <div id="checkout-section" class="mt-10">
             <h3 class="text-2xl font-light mb-4">Checkout</h3>
-            <form id="checkout-form" onsubmit="handleCheckout(event)">
-                <input type="text" id="delivery-name" placeholder="Full Name" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
-                <input type="text" id="delivery-address" placeholder="Delivery Address" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
-                <input type="text" id="delivery-city" placeholder="City" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
-                <input type="text" id="delivery-postal" placeholder="Postal Code" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
-                <input type="tel" id="delivery-phone" placeholder="Phone Number" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
-                <input type="email" id="payment-email" placeholder="Email for Payment" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
-                <button type="submit" class="btn-nexus py-4 w-full">Proceed to Payment</button>
-            </form>
+            <div id="paypal-button-container"></div>
         </div>
     </main>
 
@@ -212,7 +204,7 @@
         </div>
     </footer>
 
-    <button id="buy-now">Buy Now</button>
+    <script src="https://www.paypal.com/sdk/js?client-id=AbVYkvOph4D0UpNlal1RHg8iy2gUFI2hCJpUaBVNJqBCq3HBOHoFdCO_z20neUJcrKBsjD1-VaUEuRBZ&currency=ZAR"></script>
 
     <script>
         const products = [ /* all products unchanged from previous version */ 
@@ -395,20 +387,40 @@
                     <span class="text-lg">R${total}</span>
                 </div>
             `;
-        }
 
-        async function handleCheckout(event) {
-            event.preventDefault();
-            const email = document.getElementById('payment-email').value;
-            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-            const response = await fetch('http://localhost:54321/functions/v1/create-paypal-order', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount: total }) // Adjusted to send total amount
-            });
-            const data = await response.json();
-            window.location.href = data.approvalUrl; // redirect user to PayPal Sandbox
+            const container = document.getElementById('paypal-button-container');
+            if (container) {
+                container.innerHTML = '';
+                if (cart.length > 0) {
+                    paypal.Buttons({
+                        createOrder: function(data, actions) {
+                            return actions.order.create({
+                                purchase_units: [{
+                                    amount: {
+                                        value: total.toFixed(2),
+                                        currency_code: 'ZAR'
+                                    },
+                                    description: 'NEXUS Order'
+                                }]
+                            });
+                        },
+                        onApprove: function(data, actions) {
+                            return actions.order.capture().then(function(details) {
+                                alert('Transaction completed by ' + details.payer.name.given_name);
+                                console.log(details);
+                                cart = [];
+                                document.getElementById('cart-count').innerText = 0;
+                                renderCart();
+                                showPage('home');
+                            });
+                        },
+                        onError: function(err) {
+                            console.error(err);
+                            alert('Payment failed!');
+                        }
+                    }).render('#paypal-button-container');
+                }
+            }
         }
 
         function toggleDarkMode() {
@@ -516,16 +528,6 @@
 
             // Show popup after load
             setTimeout(showEmailModal, 1800);
-        });
-
-        document.getElementById('buy-now').addEventListener('click', async () => {
-            const response = await fetch('http://localhost:54321/functions/v1/create-paypal-order', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ amount: 10.00 }) // test item price
-            });
-            const data = await response.json();
-            window.location.href = data.approvalUrl; // redirect to PayPal
         });
     </script>
 </body>
