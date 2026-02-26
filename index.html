@@ -212,6 +212,8 @@
         </div>
     </footer>
 
+    <button id="buy-now">Buy Now</button>
+
     <script>
         const products = [ /* all products unchanged from previous version */ 
             { id: 1, name: 'Portable Car Hookah', price: 1360, originalPrice: 1850, category: 'Automotive', sales: 2100, image: 'https://www.ashishaonline.co.za/cdn/shop/products/109478526_3324191984298017_5697333573222117201_o_portable_shisha_2048x.jpg?v=1658918521', desc: 'Travel hookah designed for standard cup holders. Fits securely in most vehicle cup holders.', reviews: [] },
@@ -437,13 +439,21 @@
         }
 
         function showEmailModal() {
-            if (localStorage.getItem('nexusEmailPopupShown') === 'true') return;
+            try {
+                if (localStorage.getItem('nexusEmailPopupShown') === 'true') return;
+            } catch (e) {
+                // Ignore error and proceed to show modal
+            }
             document.getElementById('email-modal').classList.add('show');
         }
 
         function closeEmailModal() {
             document.getElementById('email-modal').classList.remove('show');
-            localStorage.setItem('nexusEmailPopupShown', 'true');
+            try {
+                localStorage.setItem('nexusEmailPopupShown', 'true');
+            } catch (e) {
+                // Ignore error
+            }
         }
 
         function handlePopupSubmit(e) {
@@ -506,6 +516,16 @@
 
             // Show popup after load
             setTimeout(showEmailModal, 1800);
+        });
+
+        document.getElementById('buy-now').addEventListener('click', async () => {
+            const response = await fetch('/api/create-paypal-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId: 1 }) // ID of test product
+            });
+            const data = await response.json();
+            window.location.href = data.approvalUrl; // redirect user to PayPal Sandbox
         });
     </script>
 </body>
