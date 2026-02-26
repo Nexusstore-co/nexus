@@ -212,8 +212,6 @@
         </div>
     </footer>
 
-    <button id="buy-now">Buy Now</button>
-
     <script>
         const products = [ /* all products unchanged from previous version */ 
             { id: 1, name: 'Portable Car Hookah', price: 1360, originalPrice: 1850, category: 'Automotive', sales: 2100, image: 'https://www.ashishaonline.co.za/cdn/shop/products/109478526_3324191984298017_5697333573222117201_o_portable_shisha_2048x.jpg?v=1658918521', desc: 'Travel hookah designed for standard cup holders. Fits securely in most vehicle cup holders.', reviews: [] },
@@ -324,6 +322,7 @@
                         </div>
                         <p class="text-sm leading-relaxed mb-10 opacity-80">${p.desc}</p>
                         <button onclick="addToCart(${p.id})" class="btn-nexus py-5 w-full">Add to Shopping Bag</button>
+                        <button onclick="buyNow(${p.id})" class="btn-nexus py-5 w-full mt-4">Buy Now</button>
                     </div>
                 `;
             }
@@ -406,6 +405,16 @@
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ amount: total, currency: 'ZAR', email }) // Adjusted to send total amount, currency, and email
+            });
+            const data = await response.json();
+            window.location.href = data.approvalUrl; // redirect user to PayPal Sandbox
+        }
+
+        async function buyNow(productId) {
+            const response = await fetch('/api/create-paypal-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId }) // ID of test product
             });
             const data = await response.json();
             window.location.href = data.approvalUrl; // redirect user to PayPal Sandbox
@@ -516,16 +525,6 @@
 
             // Show popup after load
             setTimeout(showEmailModal, 1800);
-        });
-
-        document.getElementById('buy-now').addEventListener('click', async () => {
-            const response = await fetch('/api/create-paypal-order', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId: 1 }) // ID of test product
-            });
-            const data = await response.json();
-            window.location.href = data.approvalUrl; // redirect user to PayPal Sandbox
         });
     </script>
 </body>
