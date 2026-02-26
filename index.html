@@ -19,8 +19,12 @@
         .product-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid var(--border); position: relative; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); background: var(--bg); }
         .product-card:hover { transform: translateY(-8px); box-shadow: 0 12px 30px rgba(0,0,0,0.12); }
      
-        .search-input { transition: width 0.4s ease, border-color 0.3s; width: 140px; background: transparent; color: var(--text); border-bottom: 1px solid var(--border); }
-        .search-input:focus { width: 220px; border-color: var(--accent); }
+        .search-input { transition: width 0.4s ease, border-color 0.3s; width: 100px; background: transparent; color: var(--text); border-bottom: 1px solid var(--border); }
+        .search-input:focus { width: 150px; border-color: var(--accent); }
+        @media (min-width: 768px) {
+            .search-input { width: 140px; }
+            .search-input:focus { width: 220px; }
+        }
      
         .cat-btn.active { border-bottom: 2px solid var(--text); color: var(--text); font-weight: 600; }
      
@@ -38,9 +42,9 @@
 <body id="body-tag" class="antialiased">
     <nav class="sticky top-0 z-50 glass p-4 shadow-sm">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-            <div class="flex items-center gap-6">
+            <div class="flex flex-col md:flex-row items-center gap-4 md:gap-6">
                 <h1 class="text-2xl font-light tracking-[0.4em] cursor-pointer" onclick="showPage('home')">NEXUS</h1>
-                <div class="hidden xl:flex space-x-4 text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-400">
+                <div class="flex flex-wrap justify-center gap-4 text-[10px] uppercase tracking-widest text-gray-500 dark:text-gray-400">
                     <button class="cat-btn active hover:text-[var(--text)] transition" onclick="filterByCategory('All', this)">All</button>
                     <button class="cat-btn hover:text-[var(--text)] transition" onclick="filterByCategory('Top Sellers', this)">Top Sellers</button>
                     <button class="cat-btn hover:text-[var(--text)] transition" onclick="filterByCategory('Tech', this)">Tech</button>
@@ -48,26 +52,25 @@
                 </div>
             </div>
          
-            <div class="flex items-center gap-6">
+            <div class="flex flex-wrap justify-center items-center gap-4 md:gap-6 w-full md:w-auto">
                 <input type="text" id="search-bar" onkeyup="handleSearch()" placeholder="SEARCH..." class="search-input px-2 py-1 text-xs outline-none">
-                <button onclick="toggleDarkMode()" class="p-2 border border-gray-400/30 rounded-full">
+                <button onclick="toggleDarkMode()" class="p-2 border border-gray-400/30 rounded-full shrink-0">
                     <svg id="moon-icon" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path></svg>
                 </button>
-                <div class="space-x-4 text-[10px] uppercase tracking-widest flex items-center">
+                <div class="space-x-4 text-[10px] uppercase tracking-widest flex items-center shrink-0">
                     <button onclick="showPage('wishlist')" class="hover:opacity-70 transition">Wish (<span id="wish-count">0</span>)</button>
                     <button onclick="showPage('cart')" class="hover:opacity-70 transition">Bag (<span id="cart-count">0</span>)</button>
                 </div>
             </div>
         </div>
     </nav>
-
     <main id="home" class="page active-page">
         <section class="min-h-[70vh] flex flex-col justify-center items-center text-center px-6">
             <div class="tech-animation-container">
                 <canvas id="tech-canvas"></canvas>
                 <h2 class="text-6xl md:text-8xl font-extralight mb-10 tracking-tight uppercase">Elevated Living.</h2>
             </div>
-            <p class="text-gray-600 dark:text-gray-400 mb-10 max-w-xl leading-relaxed font-light text-lg italic">Engineered for Excellence at Nexus</p>
+            <p class="text-gray-600 dark:text-gray-400 mb-10 max-w-xl leading-relaxed font-light text-lg">From zero-waste systems to artisan DIY kits—discover products designed for the conscious modern home.</p>
             <div class="flex gap-6">
                 <button onclick="showPage('products')" class="border border-current px-10 py-4 hover:bg-[var(--text)] hover:text-[var(--bg)] transition uppercase text-[10px] tracking-[0.4em] font-semibold">Shop Collection</button>
             </div>
@@ -81,168 +84,301 @@
         <section id="our-story" class="py-24 border-t border-gray-800/20 bg-gray-50/30 dark:bg-gray-900/10">
             <div class="max-w-5xl mx-auto px-6 text-center">
                 <h2 class="text-4xl font-light mb-8 uppercase tracking-tighter">Our Story</h2>
-                <p class="text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl mx-auto font-light">At Nexus, we believe connection is everything. Founded in 2023, our mission is to bridge the gap between innovation and everyday life, creating products and experiences that make a real difference.</p>
+                <p class="text-gray-600 dark:text-gray-400 leading-relaxed max-w-3xl mx-auto font-light">At Nexus, we believe connection is everything. Founded in 2023, our mission is to bridge the gap between innovation and everyday life, creating products and experiences that make a real difference.<br>What began as a bold idea has quickly grown into a passion-driven journey. Every step we take is guided by creativity, integrity, and a commitment to our community. We don’t just build products—we build solutions that inspire, simplify, and connect.<br>As we continue to grow, one thing remains constant: our dedication to delivering quality and innovation while staying true to the values that define us. Welcome to Nexus—where ideas meet impact.</p>
+            </div>
+        </section>
+        <section id="contact" class="py-24 border-t border-gray-800/10">
+            <div class="max-w-4xl mx-auto px-6">
+                <h2 class="text-3xl font-light mb-12 uppercase tracking-widest text-center">Subscribe</h2>
+                <form id="subscribe-form" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <input type="text" id="subscribe-name" placeholder="NAME" class="bg-transparent border-b border-gray-300 p-4 outline-none focus:border-[var(--accent)]">
+                    <input type="email" id="subscribe-email" placeholder="EMAIL" class="bg-transparent border-b border-gray-300 p-4 outline-none focus:border-[var(--accent)]">
+                    <textarea id="subscribe-message" placeholder="HOW CAN WE HELP?" class="md:col-span-2 bg-transparent border-b border-gray-300 p-4 outline-none focus:border-[var(--accent)]"></textarea>
+                    <button type="submit" class="md:col-span-2 btn-nexus py-4">Subscribe</button>
+                </form>
             </div>
         </section>
     </main>
-
     <main id="products" class="page max-w-7xl mx-auto py-20 px-6">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8" id="product-grid"></div>
     </main>
-
     <main id="product-details" class="page max-w-6xl mx-auto py-24 px-6">
         <button onclick="showPage('products')" class="text-xs tracking-widest opacity-50 mb-10">← BACK TO SHOP</button>
         <div id="details-content" class="grid grid-cols-1 md:grid-cols-2 gap-16"></div>
+        <div id="reviews-section" class="mt-10">
+            <h3 class="text-2xl font-light mb-4">Product Reviews</h3>
+            <div id="reviews-list" class="space-y-4"></div>
+            <form id="review-form" class="mt-6" onsubmit="submitReview(event)">
+                <select id="review-rating" class="bg-transparent border-b border-gray-300 p-2 mb-4" required>
+                    <option value="">Select Rating</option>
+                    <option value="1">1 Star</option>
+                    <option value="2">2 Stars</option>
+                    <option value="3">3 Stars</option>
+                    <option value="4">4 Stars</option>
+                    <option value="5">5 Stars</option>
+                </select>
+                <textarea id="review-comment" placeholder="Write your review..." class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required></textarea>
+                <button type="submit" class="btn-nexus py-4 w-full">Submit Review</button>
+            </form>
+        </div>
     </main>
-
-    <main id="wishlist" class="page max-w-7xl mx-auto py-24 px-6">
-        <h2 class="text-3xl font-light mb-10 tracking-widest uppercase">Your Wishlist</h2>
-        <div id="wishlist-grid" class="grid grid-cols-1 md:grid-cols-4 gap-8"></div>
-    </main>
-
+    <footer class="py-16 border-t border-var(--border) bg-var(--bg) text-var(--text) text-center">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-xl font-light tracking-[0.5em] mb-6">NEXUS</h2>
+            <div class="flex justify-center gap-10 text-[10px] tracking-widest uppercase opacity-50 mb-10">
+                <a href="#">Instagram</a><a href="#">Pinterest</a><a href="#">Ethos</a>
+            </div>
+            <p class="text-[9px] opacity-30 tracking-[0.3em]">© 2024 NEXUS COLLECTIVE. DESIGNED FOR THE FUTURE.</p>
+        </div>
+    </footer>
+    <main id="wishlist" class="page max-w-7xl mx-auto py-24 px-6"><div id="wishlist-grid" class="grid grid-cols-1 md:grid-cols-4 gap-8"></div></main>
     <main id="cart" class="page max-w-4xl mx-auto py-24 px-6">
-        <h2 class="text-3xl font-light mb-10 tracking-widest uppercase">Shopping Bag</h2>
         <div id="cart-items" class="space-y-6"></div>
         <div id="cart-summary" class="mt-10 pt-10 border-t"></div>
         <div id="checkout-section" class="mt-10">
             <h3 class="text-2xl font-light mb-4">Checkout</h3>
             <form id="checkout-form" onsubmit="handleCheckout(event)">
                 <input type="text" id="delivery-name" placeholder="Full Name" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
+                <input type="text" id="delivery-address" placeholder="Delivery Address" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
+                <input type="text" id="delivery-city" placeholder="City" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
+                <input type="text" id="delivery-postal" placeholder="Postal Code" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
+                <input type="tel" id="delivery-phone" placeholder="Phone Number" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
                 <input type="email" id="payment-email" placeholder="Email for Payment" class="bg-transparent border-b border-gray-300 p-4 w-full mb-4" required>
                 <button type="submit" class="btn-nexus py-4 w-full">Proceed to Payment</button>
             </form>
         </div>
     </main>
-
-    <footer class="py-16 border-t border-var(--border) bg-var(--bg) text-var(--text) text-center">
-        <div class="max-w-7xl mx-auto px-6">
-            <h2 class="text-xl font-light tracking-[0.5em] mb-6">NEXUS</h2>
-            <p class="text-[9px] opacity-30 tracking-[0.3em]">© 2026 NEXUS COLLECTIVE.</p>
-        </div>
-    </footer>
-
     <script>
+        // Updated products with sales data
         const products = [
-            { id: 1, name: 'Portable Car Hookah', price: 1360, category: 'Tech', image: 'https://www.ashishaonline.co.za/cdn/shop/products/109478526_3324191984298017_5697333573222117201_o_portable_shisha_2048x.jpg?v=1658918521', desc: 'Travel hookah designed for standard cup holders.' },
-            { id: 2, name: 'Auto Soap Dispenser', price: 720, category: 'Accessories', image: 'https://thefoschini.vtexassets.com/arquivos/ids/213899792-1200-1600?v=638901801086030000', desc: 'Touchless IR sensor dispenser.' },
-            { id: 3, name: 'Dog Paw Cleaner', price: 560, category: 'Accessories', image: 'https://www.makro.co.za/asset/rukmini/fccp/832/832/ng-fkpublic-ui-user-fbbe/pet-cleanser/x/w/x/10-box-1-131746-alanes-original-imahbc3ktpx4sfw5.jpeg?q=70', desc: 'Silicone brush for muddy paws.' },
-            { id: 4, name: 'Quick dry Bath Mat', price: 960, category: 'Accessories', image: 'https://www.makro.co.za/asset/rukmini/fccp/832/832/ng-fkpublic-ui-user-fbbe/mat/v/p/n/diatomite-quick-dry-non-slip-bath-mat-durable-ultra-absorbent-original-imahfzcprggcgne5.jpeg?q=70', desc: 'Diatomaceous earth absorbent mat.' }
+            { id: 1, name: 'Portable Car Hookah', price: 1360, category: 'Automotive', sales: 2100, image: 'https://www.ashishaonline.co.za/cdn/shop/products/109478526_3324191984298017_5697333573222117201_o_portable_shisha_2048x.jpg?v=1658918521', desc: 'Travel hookah designed for standard cup holders. Fits securely in most vehicle cup holders.', reviews: [] },
+            { id: 2, name: 'Auto Soap Dispenser', price: 720, category: 'Home', sales: 850, image: 'https://thefoschini.vtexassets.com/arquivos/ids/213899792-1200-1600?v=638901801086030000&width=1200&height=1600&aspect=true', desc: 'Touchless IR sensor dispenser. Experience hygienic handwashing.', reviews: [] },
+            { id: 3, name: 'Dog Paw Cleaner', price: 560, category: 'Pets', sales: 100, image: 'https://www.makro.co.za/asset/rukmini/fccp/832/832/ng-fkpublic-ui-user-fbbe/pet-cleanser/x/w/x/10-box-1-131746-alanes-original-imahbc3ktpx4sfw5.jpeg?q=70', desc: 'Silicone brush for muddy paws. Keep your home clean easily.', reviews: [] },
+            { id: 4, name: 'Quick dry Bath Mat', price: 960, category: 'Home', sales: 480, image: 'https://www.makro.co.za/asset/rukmini/fccp/832/832/ng-fkpublic-ui-user-fbbe/mat/v/p/n/diatomite-quick-dry-non-slip-bath-mat-durable-ultra-absorbent-original-imahfzcprggcgne5.jpeg?q=70', desc: 'Diatomaceous earth absorbent mat. Absorbs water instantly.', reviews: [] },
+            { id: 15, name: 'Self-Cleaning Bottle', price: 1520, category: 'Tech', sales: 310, image: 'https://www.cnet.com/a/img/resize/1077e112091a42644995a1945ec162c2d2fae98f/hub/2025/06/04/7bdb809e-6286-4d9b-bcd9-08077ce4dbb2/larq-self-cleaning-water-bottle.jpg?auto=webp&width=1200', desc: 'Built-in UV-C light for water purification.', reviews: [] },
+            { id: 16, name: 'Ungreen magnetic 5000Mah wireless 15W power bank', price: 1212, category: 'Tech', sales: 640, image: 'https://www.istore.co.za/media/catalog/product/cache/7cbfd4bf9761b066f119e95af17e67c5/5/1/5105rfkqdol._ac_sy879_.jpg', desc: 'The UGREEN Magnetic Wireless Power Bank 5000mAh securely attaches to your magsafe compatible iPhone with a strong internal magnet, providing cable-free charging without worrying about slippage.', reviews: [] },
+            { id: 17, name: 'Playstation 5 wireless ear buds', price: 6599, category: 'Tech', sales: 915, image: 'https://thefoschini.vtexassets.com/arquivos/ids/222797185-1200-1600?v=639007799865470000&width=1200&height=1600&aspect=true', desc: 'mmerse yourself in a new era of gaming audio with the PlayStation®5 PULSE Explore™ Wireless Earbuds Elevate your gaming experience at home and on the go with extraordinary lifelike sound delivered by planar magnetic drivers.', reviews: [] },
+            { id: 18, name: 'Muscle massage gun', price: 1549, category: 'Tech', sales: 950, image: 'https://m.media-amazon.com/images/I/61-erz0MCqL._AC_SX679_.jpg', desc: 'Deep muscle relaxation massage gun: massage gun significantly relieves muscle pain and stiffness. With 6 speed speeds, muscle massager can massage deep into the muscle of 10 mm. Muscle massage gun ideal for massaging neck, back, arms and legs Awaken your entire body muscles and cover your massage needs from daily massage to deep massage.', reviews: [] },
+            { id: 19, name: 'Xbox wireless controller', price: 3499, category: 'Accessories', sales: 180, image: 'https://thefoschini.vtexassets.com/arquivos/ids/221238481-1200-1600?v=638965623560270000&width=1200&height=1600&aspect=true', desc: 'Hold nothing back with the Breaker special edition series. Ice Breaker keeps it forever fresh with a mix of iced and frosted blues. Stay elegantly on target with textured triggers and hold on to the action with rubberized grips on the back cases. Includes Xbox Wireless and Bluetooth technology to quickly pair with, play on, and switch between devices including console, PC, and cloud.', reviews: [] },
+            { id: 20, name: 'Benewy sleep Headphones Bluetooth Eye mask with built in speakers', price: 2999, category: 'Tech', sales: 920, image: 'https://m.media-amazon.com/images/I/81JT54o3L2L._AC_SX679_.jpg', desc: 'Stereo Sound with Thin Speakers Thickness is only one-third of the average speaker, which is very comfortable for sleepers. True HD HIFI sound featuring latest Bluetooth V-5.0 technology that produce great sound quality, bluetooth can pair your iPhone XS Max/ iPhone XS/ iPhone XR/ iPhone X/ iPhone 7/ iPhone 8/ iPhone 6 or any other Smartphones iPad Tablets easily.Compatible with Android and Ios.It is the best gift for family or friends on travel and airplane in Festivals.', reviews: [] },
+            { id: 35, name: 'Wireless hair straigtner comb', price: 1200, category: 'Accessories', sales: 440, image: 'https://www.makro.co.za/asset/rukmini/fccp/832/832/ng-fkpublic-ui-user-fbbe/electric-hair-curler/x/l/g/8-8-5-box-cordless-hair-straightening-comb-marevic-original-imahh3fhhzk2ecze.jpeg?q=70', desc: 'cordless hair straightening comb with a maximum temperature of 200 degrees.', reviews: [] },
+            { id: 36, name: 'Magnetic gym water bottle sleeve', price: 999, category: 'Accessories', sales: 1080, image: 'https://www.makro.co.za/asset/rukmini/fccp/832/832/ng-fkpublic-ui-user-fbbe/sport-bag/7/l/q/magnetic-water-bottle-gym-sleeve-standard-box-saddle-bag-original-imaheygpkzgrqcer.jpeg?q=70', desc: 'Magnetic Water Bottle Gym Sleeve- Where Function Meets Professionalism Elevate your active lifestyle with a bag designed to hold your water bottle and other essentials with precision and style. The Magnetic Water Bottle Gym Bag seamlessly blends convenience with a refined aesthetic, making it an indispensable accessory for the modern professional. Key Features: Magnetic Attachment: Equipped with robust magnets, this gym bag secures itself to metal surfaces such as gym equipment. This ensures that your water bottle, phone, gym card, and AirPods remain accessible and secure during workouts. Multiple Pockets: Thoughtfully designed with dedicated storage areas, the bag includes pockets for smartphones, keys, and other gym accessories-keeping your items organized and within easy reach.', reviews: [] },
+            { id: 45, name: 'Ai smart glasses Built in 8mp HD 1080 Camera, Chatgpt real rime translation smartview pro', price: 2700, category: 'Tech', sales: 1100, image: 'https://m.media-amazon.com/images/I/41XJzyPVduL._AC_SX679_.jpg', desc: 'Built-in 8MP Camera & 1080P Video with Audio, Images analysis, Take photos, record videos without phone Real-Time Language Translation , 25 languages supported : Chinese, English, French, German, Spanish, Japanese, Italian, Hindi, Korean, Thai, Russian, Vietnamese, Malay, Indonesian, Greek, Czech, Romanian, Swedish, Dutch, Polish, Arabic, Persian, Urdu, Turkish and Hungarian ChatGPT Voice Assistant Music and Podcasts On the Go Answer Calls Hands Free Up to 8 hours active use / 30 hours standby, 320mAh.', reviews: [] },
+            { id: 50, name: 'Xiaomi Robot Vacuum E5 black', price: 4999, category: 'Tech', sales: 670, image: 'https://thefoschini.vtexassets.com/arquivos/ids/213812593-1200-1600?v=638901774087230000&width=1200&height=1600&aspect=true', desc: 'The Xiaomi Robot Vacuum E5 offers efficient vacuuming and mopping in one device, ideal for pet owners and maintaining a hair-free environment. Its compact 300mm body and low 70mm height allow it to navigate tight spaces and under furniture, ensuring thorough cleaning. With dual side brushes, a nozzle, a dustbin filter, and a powerful 2000Pa suction fan, it provides deep and efficient cleaning. Intelligent sensors enable flexible obstacle navigation, while its zigzag cleaning path maximizes coverage. Remotely controllable via the Mi Home/Xiaomi Home app and compatible with Alexa and Google Assistant, it integrates seamlessly into smart homes.', reviews: [] },
+            { id: 55, name: 'Vacuum Motion Cleaner', price: 3499, category: 'Tech', sales: 500, image: 'https://m.media-amazon.com/images/I/71S0q3dLmqL._AC_SL1500_.jpg', desc: 'Advanced motion-sensing vacuum cleaner with smart navigation and powerful suction for effortless cleaning.', reviews: [] },
+            { id: 56, name: 'LED Mirror', price: 3500, category: 'Accessories', sales: 750, image: 'https://www.makro.co.za/asset/rukmini/fccp/832/832/ng-fkpublic-ui-user-fbbe/mirror/h/r/1/frameless-rectangle-bathroom-mirror-box-1-anti-fog-led-lighted-original-imahgvrfgbgyuhgv.jpeg?q=70', desc: 'Illuminated LED mirror with adjustable brightness and anti-fog technology for perfect grooming.', reviews: [] },
+            { id: 57, name: 'Motion Sensor Trash Can', price: 2499, category: 'Accessories', sales: 620, image: 'https://www.makro.co.za/asset/rukmini/fccp/832/832/ng-fkpublic-ui-user-fbbe/dustbin/5/h/r/case-23-5-1-smart-trash-can-lijia-15-6-original-imahe6qzgreh4hqy.jpeg?q=70', desc: 'Hands-free motion sensor trash can with odor control and durable stainless steel construction.', reviews: [] },
+            { id: 58, name: 'Mattress vacuum cleaner', price: 999, category: 'Tech', sales: 480, image: 'https://www.makro.co.za/asset/rukmini/fccp/832/832/ng-fkpublic-ui-user-fbbe/vacuum-cleaner/b/m/p/handheld-uv-mattress-vacuum-cleaner-generic-original-imahgfc4qbnezagr.jpeg?q=70', desc: 'V CLEANING: Features UV light technology combined with powerful suction to effectively clean mattresses, bedding, and fabric surfaces CORDLESS DESIGN: Convenient wireless operation with rechargeable battery for unrestricted cleaning mobility around your home VERSATILE USE: Suitable for multiple surfaces including beds, sofas, cushions, carpets, and other fabric furnishings EFFICIENT FILTRATION: Multi-stage filtration system helps capture dust, debris, and small particles from soft surfaces ERGONOMIC FEATURES: Lightweight construction with comfortable grip handle and easy-to-use controls for effortless operation.', reviews: [] },
+            { id: 59, name: 'Signature Engraving Kit', price: 1699, category: 'Accessories', sales: 550, image: 'https://www.makro.co.za/asset/rukmini/fccp/832/832/ng-fkpublic-ui-user-fbbe/engraving-tool-set/l/o/b/0-1-box-1-wireless-electric-engraving-pen-flycross-1-original-imahjff3hyfvjhyr.jpeg?q=70', desc: 'Portable engraving kit for personalizing items with precision laser technology and easy-to-use design.', reviews: [] }
         ];
-
         let cart = [];
         let wishlist = [];
-
+        let currentProductId = null;
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
             document.getElementById(pageId).classList.add('active-page');
-            window.scrollTo(0,0);
-            if(pageId === 'products') renderProducts();
-            if(pageId === 'cart') renderCart();
-            if(pageId === 'wishlist') renderWishlist();
+            if (pageId === 'cart') renderCart();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
-        function renderProducts(filtered = products) {
+        function filterByCategory(cat, btn) {
+            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+            if(btn) btn.classList.add('active');
+            let filtered;
+            if (cat === 'All') {
+                filtered = products;
+            } else if (cat === 'Top Sellers') {
+                // Dynamically sort by sales data
+                filtered = [...products].sort((a, b) => b.sales - a.sales).slice(0, 4);
+            } else {
+                filtered = products.filter(p => p.category === cat);
+            }
+            renderProducts(filtered);
+            showPage('products');
+        }
+        function renderProducts(items = products) {
             const grid = document.getElementById('product-grid');
-            grid.innerHTML = filtered.map(p => `
-                <div class="product-card p-4">
-                    <img src="${p.image}" class="w-full h-64 object-cover mb-4 rounded" onclick="viewDetails(${p.id})">
-                    <h3 class="text-xs tracking-widest uppercase mb-2">${p.name}</h3>
-                    <p class="font-bold text-sm mb-4">R${p.price}</p>
-                    <button onclick="addToCart(${p.id})" class="btn-nexus w-full">Add to Bag</button>
-                    <button onclick="toggleWishlist(${p.id})" class="absolute top-4 right-4 text-xl">
-                        ${wishlist.includes(p.id) ? '❤️' : '♡'}
-                    </button>
+            grid.innerHTML = items.map(p => `
+                <div class="product-card flex flex-col">
+                    ${p.sales > 800 ? '<div class="absolute top-3 left-3 z-10 bg-black text-white text-[8px] font-bold px-2 py-1 rounded tracking-tighter">BEST SELLER</div>' : ''}
+                    <div class="w-full aspect-square overflow-hidden cursor-pointer" onclick="viewDetails(${p.id})">
+                        <img src="${p.image}" class="w-full h-full object-cover transition duration-700 hover:scale-110">
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xs font-bold tracking-widest uppercase">${p.name}</h3>
+                            <span class="text-[9px] opacity-40 uppercase font-semibold">${p.sales}+ sold</span>
+                        </div>
+                        <p class="text-xs opacity-50 mb-4 line-clamp-2">${p.desc}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-light">R${p.price}</span>
+                            <button onclick="addToCart(${p.id})" class="text-[9px] tracking-widest uppercase border-b border-current hover:opacity-50 transition">Add to Bag</button>
+                        </div>
+                    </div>
                 </div>
             `).join('');
         }
-
+        function viewDetails(id) {
+            currentProductId = id;
+            const p = products.find(prod => prod.id === id);
+            document.getElementById('details-content').innerHTML = `
+                <div class="relative">
+                    <img src="${p.image}" class="w-full h-auto rounded-lg">
+                    ${p.sales > 800 ? '<div class="absolute top-4 left-4 bg-black text-white px-4 py-2 text-[10px] tracking-widest">TRENDING ITEM</div>' : ''}
+                </div>
+                <div class="flex flex-col justify-center">
+                    <div class="mb-4">
+                        <span class="text-[10px] uppercase tracking-[0.2em] text-blue-500 font-semibold">${p.category}</span>
+                        <h2 class="text-4xl font-extralight mb-2 uppercase">${p.name}</h2>
+                        <p class="text-[10px] opacity-50 uppercase tracking-widest">Volume: ${p.sales} units delivered</p>
+                    </div>
+                    <p class="text-xl mb-8 opacity-60">R${p.price}.00</p>
+                    <p class="text-sm leading-relaxed mb-10 opacity-80">${p.desc}</p>
+                    <button onclick="addToCart(${p.id})" class="btn-nexus py-5 w-full">Add to Shopping Bag</button>
+                </div>
+            `;
+            renderReviews(p.reviews);
+            showPage('product-details');
+        }
+        function renderReviews(reviews) {
+            const list = document.getElementById('reviews-list');
+            list.innerHTML = reviews.length ? reviews.map(r => `
+                <div class="border-b pb-4">
+                    <p class="text-sm font-bold">${r.rating} Stars</p>
+                    <p class="text-sm">${r.comment}</p>
+                </div>
+            `).join('') : '<p class="text-xs opacity-50">No reviews yet.</p>';
+        }
+        function submitReview(event) {
+            event.preventDefault();
+            const rating = document.getElementById('review-rating').value;
+            const comment = document.getElementById('review-comment').value;
+            if (rating && comment) {
+                const product = products.find(p => p.id === currentProductId);
+                product.reviews.push({ rating, comment });
+                renderReviews(product.reviews);
+                document.getElementById('review-form').reset();
+                alert('Review submitted!');
+            }
+        }
         function addToCart(id) {
             const product = products.find(p => p.id === id);
-            cart.push(product);
-            updateCounts();
-            alert(`${product.name} added to bag!`);
+            const existing = cart.find(item => item.id === id);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.quantity, 0);
         }
-
-        // New Remove functionality
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCounts();
-            renderCart();
-        }
-
         function renderCart() {
-            const container = document.getElementById('cart-items');
-            const summary = document.getElementById('cart-summary');
-            
-            if (cart.length === 0) {
-                container.innerHTML = '<p class="opacity-50 tracking-widest">YOUR BAG IS EMPTY.</p>';
-                summary.innerHTML = '';
+            const itemsDiv = document.getElementById('cart-items');
+            itemsDiv.innerHTML = cart.length ? cart.map(item => `
+                <div class="flex justify-between items-center border-b pb-4">
+                    <div>
+                        <h3 class="text-sm font-bold">${item.name}</h3>
+                        <p class="text-xs">Quantity: ${item.quantity}</p>
+                    </div>
+                    <span class="text-sm">R${item.price * item.quantity}</span>
+                </div>
+            `).join('') : '<p class="text-center py-10 opacity-50">Your bag is empty.</p>';
+           
+            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+            document.getElementById('cart-summary').innerHTML = `
+                <div class="flex justify-between">
+                    <span class="text-lg font-light tracking-widest">SUBTOTAL</span>
+                    <span class="text-lg">R${total}</span>
+                </div>
+            `;
+        }
+        function handleCheckout(event) {
+            event.preventDefault();
+            const email = document.getElementById('payment-email').value;
+            const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0) * 100;
+            const handler = PaystackPop.setup({
+                key: 'pk_test_your_key_here',
+                email: email,
+                amount: total,
+                currency: 'ZAR',
+                callback: function(response) {
+                    alert('Payment successful!');
+                    cart = [];
+                    document.getElementById('cart-count').innerText = 0;
+                    showPage('home');
+                },
+                onClose: function() { alert('Payment cancelled.'); }
+            });
+            handler.openIframe();
+        }
+        function toggleDarkMode() {
+            document.getElementById('body-tag').classList.toggle('dark-mode');
+        }
+        function handleSearch() {
+            const query = document.getElementById('search-bar').value.toLowerCase();
+            const filtered = products.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+            renderProducts(filtered);
+            showPage('products');
+        }
+        window.onload = () => {
+            renderProducts();
+            initTechAnimation();
+            document.getElementById('subscribe-form').addEventListener('submit', handleSubscribe);
+        };
+        function handleSubscribe(event) {
+            event.preventDefault();
+            const name = document.getElementById('subscribe-name').value;
+            const email = document.getElementById('subscribe-email').value;
+            const message = document.getElementById('subscribe-message').value;
+
+            if (!email) {
+                alert('Please enter your email.');
                 return;
             }
 
-            container.innerHTML = cart.map((item, index) => `
-                <div class="flex justify-between items-center border-b border-gray-100 pb-4">
-                    <div class="flex gap-4 items-center">
-                        <img src="${item.image}" class="w-16 h-16 object-cover rounded">
-                        <div>
-                            <h4 class="text-xs uppercase tracking-widest font-semibold">${item.name}</h4>
-                            <p class="text-xs opacity-60">R${item.price}</p>
-                            <button onclick="removeFromCart(${index})" class="text-[9px] text-red-500 uppercase tracking-tighter mt-2 hover:underline">Remove Item</button>
-                        </div>
-                    </div>
-                    <span class="text-sm font-bold">R${item.price}</span>
-                </div>
-            `).join('');
-
-            const total = cart.reduce((sum, item) => sum + item.price, 0);
-            summary.innerHTML = `
-                <div class="flex justify-between text-xl tracking-widest uppercase">
-                    <span>Total</span>
-                    <span>R${total}</span>
-                </div>
-            `;
+            fetch('https://formspree.io/f/meelvpda', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, email, message })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Subscription successful!');
+                    document.getElementById('subscribe-form').reset();
+                } else {
+                    alert('Subscription failed. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again later.');
+            });
         }
-
-        function toggleWishlist(id) {
-            const index = wishlist.indexOf(id);
-            if (index > -1) wishlist.splice(index, 1);
-            else wishlist.push(id);
-            updateCounts();
-            renderProducts();
+        function initTechAnimation() {
+            const canvas = document.getElementById('tech-canvas');
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            const ctx = canvas.getContext('2d');
+            const particles = Array.from({ length: 40 }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5
+            }));
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.x += p.vx; p.y += p.vy;
+                    if(p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                    if(p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, 1, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(37,99,235,0.3)'; ctx.fill();
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
         }
-
-        function updateCounts() {
-            document.getElementById('cart-count').innerText = cart.length;
-            document.getElementById('wish-count').innerText = wishlist.length;
-        }
-
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-        }
-
-        function filterByCategory(cat, btn) {
-            document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const filtered = cat === 'All' ? products : products.filter(p => p.category === cat);
-            renderProducts(filtered);
-        }
-
-        function viewDetails(id) {
-            const p = products.find(p => p.id === id);
-            document.getElementById('details-content').innerHTML = `
-                <img src="${p.image}" class="w-full rounded-lg shadow-xl">
-                <div>
-                    <h2 class="text-4xl font-light mb-4 uppercase tracking-tighter">${p.name}</h2>
-                    <p class="text-2xl mb-8">R${p.price}</p>
-                    <p class="text-gray-500 mb-10 leading-relaxed">${p.desc}</p>
-                    <button onclick="addToCart(${p.id})" class="btn-nexus w-full py-4 text-lg">Add to Bag</button>
-                </div>
-            `;
-            showPage('product-details');
-        }
-
-        // Initialize view
-        renderProducts();
     </script>
 </body>
 </html>
